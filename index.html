@@ -400,7 +400,7 @@
         </div>
         
         <footer>
-            <p>Generatore di Firma Email Gratuito di <a href="https://www.gabrieleviola.it">Gabriele Viola</a>&copy; 2025 - I dati vengono elaborati localmente nel browser e non vengono salvati o trasmessi da questo tool</p> 
+            <p>Generatore di Firma Email Gratuito di <a href="https://www.gabrieleviola.it">Gabriele Viola</a>&copy; <span class="current-year"></span> - I dati vengono elaborati localmente nel browser e non vengono salvati o trasmessi da questo tool</p> 
         </footer>
     </div>
 
@@ -588,5 +588,12 @@
             }
         });
     </script>
+
+<script>
+    document.querySelectorAll(".current-year").forEach(function(el) {
+        el.textContent = new Date().getFullYear();
+    });
+</script>
+
 </body>
 </html>
