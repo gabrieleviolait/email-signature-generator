@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore di Firma Email con Immagine</title>
+<style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --background-color: #f9f9f9;
+            --text-color: #333;
+            --border-color: #ddd;
+            --success-color: #2ecc71;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .generator-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .preview-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        button.success {
+            background-color: var(--success-color);
+        }
+        
+        .signature-preview {
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            min-height: 250px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .signature-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .signature-content {
+            flex: 1;
+        }
+        
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+        }
+        
+        .image-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .upload-btn {
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            border: 1px dashed var(--border-color);
+        }
+        
+        .upload-btn:hover {
+            background-color: #e9ecef;
+        }
+        
+        .image-preview-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .preview-image {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .instructions {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .color-option.selected {
+            border-color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .generator-container {
+                flex-direction: column;
+            }
+            
+            .signature-preview {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✍️ Generatore di Firma Email</h1>
+            <p class="description">Crea una firma email professionale in pochi secondi. Aggiungi la tua foto o il logo aziendale e personalizza tutti i dettagli.</p>
+        </header>
+        
+        <div class="generator-container">
+            <div class="input-section">
+                <h2 class="section-title">👤 Dati Personali</h2>
+                <div class="form-group">
+                    <label for="nome"><i class="fas fa-user"></i> Nome e Cognome</label>
+                    <input type="text" id="nome" placeholder="Mario Rossi">
+                </div>
+                
+                <div class="form-group">
+                    <label for="ruolo"><i class="fas fa-briefcase"></i> Ruolo / Posizione</label>
+                    <input type="text" id="ruolo" placeholder="Responsabile Vendite">
+                </div>
+                
+                <div class="form-group">
+                    <label for="azienda"><i class="fas fa-building"></i> Azienda</label>
+                    <input type="text" id="azienda" placeholder="Esempio S.r.l.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefono"><i class="fas fa-phone"></i> Telefono</label>
+                    <input type="text" id="telefono" placeholder="+39 012 345 6789">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" placeholder="mario.rossi@esempio.it">
+                </div>
+                
+                <div class="form-group">
+                    <label for="sito"><i class="fas fa-globe"></i> Sito Web</label>
+                    <input type="text" id="sito" placeholder="www.esempio.it">
+                </div>
+                
+                <h2 class="section-title">🖼️ Immagine</h2>
+                <div class="form-group">
+                    <label for="imageUpload">Carica Immagine (Logo o Foto)</label>
+                    <div class="image-upload">
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        <button type="button" id="uploadTrigger" class="upload-btn">
+                            <i class="fas fa-upload"></i> Seleziona Immagine
+                        </button>
+                        <div class="image-preview-container">
+                            <div id="imagePreview"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 class="section-title">🔗 Social Media</h2>
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn</label>
+                    <input type="text" id="linkedin" placeholder="https://linkedin.com/in/tuoprofilo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="facebook">Facebook</label>
+                    <input type="text" id="facebook" placeholder="https://facebook.com/tuoprofilo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="instagram">Instagram</label>
+                    <input type="text" id="instagram" placeholder="https://instagram.com/tuoprofilo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="twitter">X / Twitter</label>
+                    <input type="text" id="twitter" placeholder="https://twitter.com/tuoprofilo">
+                </div>
+                
+                <h2 class="section-title">🎨 Personalizzazione</h2>
+                <div class="form-group">
+                    <label for="tema">Tema Colore</label>
+                    <div class="color-options">
+                        <div class="color-option selected" style="background-color: #3498db;" data-color="#3498db"></div>
+                        <div class="color-option" style="background-color: #e74c3c;" data-color="#e74c3c"></div>
+                        <div class="color-option" style="background-color: #2ecc71;" data-color="#2ecc71"></div>
+                        <div class="color-option" style="background-color: #f39c12;" data-color="#f39c12"></div>
+                        <div class="color-option" style="background-color: #9b59b6;" data-color="#9b59b6"></div>
+                    </div>
+                    <select id="tema" style="margin-top: 10px;">
+                        <option value="#3498db">Blu Professionale</option>
+                        <option value="#e74c3c">Rosso Energico</option>
+                        <option value="#2ecc71">Verde Fresco</option>
+                        <option value="#f39c12">Arancione Creativo</option>
+                        <option value="#9b59b6">Viola Innovativo</option>
+                    </select>
+                </div>
+                
+                <button id="generaFirma" class="success">
+                    ✨ Genera Firma
+                </button>
+            </div>
+            
+            <div class="preview-section">
+                <h2 class="section-title">👁️ Anteprima Firma</h2>
+                <div class="signature-preview" id="signaturePreview">
+                    <div class="signature-content">
+                        <p>La tua firma apparirà qui dopo aver compilato il modulo e cliccato "Genera Firma".</p>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button id="copiaHTML">
+                        <i class="fas fa-code"></i> Copia HTML
+                    </button>
+                    <button id="copiaTesto">
+                        <i class="fas fa-text-height"></i> Copia Testo
+                    </button>
+                    <button id="resetForm">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="instructions">
+                    <h3><i class="fas fa-info-circle"></i> Istruzioni:</h3>
+                    <p>1. Compila tutti i campi desiderati</p>
+                    <p>2. Carica un'immagine (opzionale)</p>
+                    <p>3. Scegli il colore del tema</p>
+                    <p>4. Clicca "Genera Firma"</p>
+                    <p>5. Copia il codice HTML o il testo per utilizzarlo nelle tue email</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Generatore di Firma Email Gratuito di <a href="https://www.gabrieleviola.it">Gabriele Viola</a>&copy; 2025 - I dati vengono elaborati localmente nel browser e non vengono salvati o trasmessi da questo tool</p> 
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementi del form
+            const nomeInput = document.getElementById('nome');
+            const ruoloInput = document.getElementById('ruolo');
+            const aziendaInput = document.getElementById('azienda');
+            const telefonoInput = document.getElementById('telefono');
+            const emailInput = document.getElementById('email');
+            const sitoInput = document.getElementById('sito');
+            const linkedinInput = document.getElementById('linkedin');
+            const facebookInput = document.getElementById('facebook');
+            const instagramInput = document.getElementById('instagram');
+            const twitterInput = document.getElementById('twitter');
+            const temaSelect = document.getElementById('tema');
+            const colorOptions = document.querySelectorAll('.color-option');
+            const generaFirmaBtn = document.getElementById('generaFirma');
+            const copiaHTMLBtn = document.getElementById('copiaHTML');
+            const copiaTestoBtn = document.getElementById('copiaTesto');
+            const resetFormBtn = document.getElementById('resetForm');
+            const signaturePreview = document.getElementById('signaturePreview');
+            const imageUpload = document.getElementById('imageUpload');
+            const uploadTrigger = document.getElementById('uploadTrigger');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            let currentColor = temaSelect.value;
+            let uploadedImage = null;
+            
+            // Gestione selezione colore
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    colorOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    currentColor = this.getAttribute('data-color');
+                    temaSelect.value = currentColor;
+                });
+            });
+            
+            // Aggiorna il colore quando cambia la selezione
+            temaSelect.addEventListener('change', function() {
+                currentColor = this.value;
+                colorOptions.forEach(opt => {
+                    opt.classList.toggle('selected', opt.getAttribute('data-color') === currentColor);
+                });
+            });
+            
+            // Gestione upload immagine
+            uploadTrigger.addEventListener('click', function() {
+                imageUpload.click();
+            });
+            
+            imageUpload.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        uploadedImage = e.target.result;
+                        imagePreview.innerHTML = `<img src="${uploadedImage}" class="preview-image" alt="Anteprima immagine">`;
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            
+            // Genera la firma
+            generaFirmaBtn.addEventListener('click', function() {
+                generateSignature();
+            });
+            
+            // Copia HTML
+            copiaHTMLBtn.addEventListener('click', function() {
+                const htmlContent = document.getElementById('htmlContent').value;
+                navigator.clipboard.writeText(htmlContent).then(function() {
+                    alert('Codice HTML copiato negli appunti!');
+                });
+            });
+            
+            // Copia come testo
+            copiaTestoBtn.addEventListener('click', function() {
+                const textContent = signaturePreview.textContent || signaturePreview.innerText;
+                navigator.clipboard.writeText(textContent).then(function() {
+                    alert('Firma copiata come testo negli appunti!');
+                });
+            });
+            
+            // Reset form
+            resetFormBtn.addEventListener('click', function() {
+                if (confirm('Sei sicuro di voler resettare tutti i campi?')) {
+                    document.querySelectorAll('input').forEach(input => {
+                        if (input.type !== 'file') input.value = '';
+                    });
+                    temaSelect.value = '#3498db';
+                    currentColor = '#3498db';
+                    colorOptions.forEach(opt => {
+                        opt.classList.toggle('selected', opt.getAttribute('data-color') === currentColor);
+                    });
+                    imagePreview.innerHTML = '';
+                    uploadedImage = null;
+                    signaturePreview.innerHTML = '<div class="signature-content"><p>La tua firma apparirà qui dopo aver compilato il modulo e cliccato "Genera Firma".</p></div>';
+                }
+            });
+            
+            function generateSignature() {
+                const nome = nomeInput.value || 'Nome Cognome';
+                const ruolo = ruoloInput.value || 'Ruolo';
+                const azienda = aziendaInput.value || 'Azienda';
+                const telefono = telefonoInput.value || '';
+                const email = emailInput.value || 'email@esempio.it';
+                const sito = sitoInput.value || '';
+                const linkedin = linkedinInput.value || '';
+                const facebook = facebookInput.value || '';
+                const instagram = instagramInput.value || '';
+                const twitter = twitterInput.value || '';
+                
+                // Crea HTML per la firma
+                let signatureHTML = `
+                    <div style="font-family: Arial, sans-serif; font-size: 12px; color: #333; line-height: 1.4;">
+                        <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+                            <tr>
+                `;
+                
+                // Aggiungi immagine se presente
+                if (uploadedImage) {
+                    signatureHTML += `
+                        <td style="padding-right: 20px; vertical-align: top;">
+                            <img src="${uploadedImage}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 4px; border: 2px solid ${currentColor};" alt="${nome}">
+                        </td>
+                    `;
+                }
+                
+                signatureHTML += `
+                        <td style="vertical-align: top; border-left: 3px solid ${currentColor}; padding-left: 15px;">
+                            <div style="font-weight: bold; font-size: 16px; color: ${currentColor}; margin-bottom: 5px;">${nome}</div>
+                            <div style="margin-bottom: 3px;">${ruolo}</div>
+                            <div style="margin-bottom: 3px;">${azienda}</div>
+                            ${telefono ? `<div style="margin-bottom: 3px;">Tel: ${telefono}</div>` : ''}
+                            <div style="margin-bottom: 3px;">Email: <a href="mailto:${email}" style="color: ${currentColor}; text-decoration: none;">${email}</a></div>
+                            ${sito ? `<div style="margin-bottom: 3px;">Sito: <a href="https://${sito}" style="color: ${currentColor}; text-decoration: none;">${sito}</a></div>` : ''}
+                            <div style="margin-top: 10px;">
+                `;
+                
+                // Aggiungi icone social se presenti
+                if (linkedin || facebook || instagram || twitter) {
+                    signatureHTML += `<div style="margin-top: 8px;">`;
+                    
+                    if (linkedin) {
+                        signatureHTML += `<a href="${linkedin}" style="display: inline-block; margin-right: 8px; color: ${currentColor}; text-decoration: none;">LinkedIn</a>`;
+                    }
+                    if (facebook) {
+                        signatureHTML += `<a href="${facebook}" style="display: inline-block; margin-right: 8px; color: ${currentColor}; text-decoration: none;">Facebook</a>`;
+                    }
+                    if (instagram) {
+                        signatureHTML += `<a href="${instagram}" style="display: inline-block; margin-right: 8px; color: ${currentColor}; text-decoration: none;">Instagram</a>`;
+                    }
+                    if (twitter) {
+                        signatureHTML += `<a href="${twitter}" style="display: inline-block; margin-right: 8px; color: ${currentColor}; text-decoration: none;">X / Twitter</a>`;
+                    }
+                    
+                    signatureHTML += `</div>`;
+                }
+                
+                signatureHTML += `
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                </div>
+                `;
+                
+                // Aggiorna l'anteprima
+                signaturePreview.innerHTML = signatureHTML;
+                
+                // Crea un textarea nascosto per il codice HTML
+                let htmlTextarea = document.getElementById('htmlContent');
+                if (!htmlTextarea) {
+                    htmlTextarea = document.createElement('textarea');
+                    htmlTextarea.id = 'htmlContent';
+                    htmlTextarea.style.position = 'absolute';
+                    htmlTextarea.style.left = '-9999px';
+                    document.body.appendChild(htmlTextarea);
+                }
+                htmlTextarea.value = signatureHTML;
+            }
+        });
+    </script>
+</body>
+</html>
